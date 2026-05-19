@@ -1,2 +1,0 @@
-# ZAK-Store
-games
