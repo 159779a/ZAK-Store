@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع الأدعية الإسلامية</title>
+    <style>
+        /* إعدادات الخطوط والخلفية الإسلامية */
+        @import url('https://googleapis.com');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            overflow-x: hidden;
+            background-color: #0b301a;
+        }
+
+        /* زخرفة رمادية إسلامية عامة باستخدام CSS */
+        .islamic-pattern {
+            background-color: #124e2b;
+            background-image: radial-gradient(circle at 50% 50%, #176538 10%, transparent 20%),
+                              radial-gradient(circle at 0 0, #176538 5%, transparent 10%),
+                              radial-gradient(circle at 100% 0, #176538 5%, transparent 10%),
+                              radial-gradient(circle at 100% 100%, #176538 5%, transparent 10%),
+                              radial-gradient(circle at 0 100%, #176538 5%, transparent 10%);
+            background-size: 40px 40px;
+        }
+
+        /* --- الشاشة الأولى --- */
+        #screen1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: transform 0.6s ease-in-out;
+            z-index: 2;
+            border: 15px solid #d4af37; /* إطار ذهبي وزخرفة على الأطراف */
+            box-sizing: border-box;
+        }
+
+        /* زوايا زخرفية للشاشة الأولى */
+        .corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #d4af37;
+        }
+        .top-left { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .top-right { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        .welcome-box {
+            background-color: #061f11;
+            border: 3px double #d4af37;
+            padding: 30px 60px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .welcome-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #d4af37;
+        }
+
+        .welcome-box h1 {
+            color: #d4af37;
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .welcome-box p {
+            color: #fff;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        /* --- الشاشة الثانية --- */
+        #screen2 {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background-color: #061f11; /* أخضر غامق جداً ومزخرف */
+            border: 10px solid #d4af37;
+        }
+
+        .header-title {
+            text-align: center;
+            color: #d4af37;
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* شبكة الـ 100 مكعب */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cube {
+            background: linear-gradient(135deg, #114728, #0b301a);
+            border: 2px solid #d4af37;
+            color: #fff;
+            padding: 25px 15px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .cube:hover {
+            background: #d4af37;
+            color: #061f11;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        /* --- النافذة المنبثقة لعرض الأدعية --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #0b301a;
+            border: 3px solid #d4af37;
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 25px rgba(212,175,55,0.3);
+        }
+
+        .modal-title {
+            color: #d4af37;
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            margin-top: 0;
+            border-bottom: 1px dashed #d4af37;
+            padding-bottom: 10px;
+        }
+
+        .dua-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+
+        .close-btn {
+            background-color: #d4af37;
+            color: #061f11;
+            border: none;
+            padding: 10px 25px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .close-btn:hover {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشاشة الأولى -->
+    <div id="screen1" class="islamic-pattern">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+        
+        <div class="welcome-box" onclick="goToNextScreen()">
+            <h1>السلام عليكم</h1>
+            <p>انقر هنا للدخول إلى حصن الأدعية</p>
+        </div>
+    </div>
+
+    <!-- الشاشة الثانية -->
+    <div id="screen2" class="islamic-pattern">
+        <h2 class="header-title">✨ بَوَّابَةُ الأَدْعِيَةِ المَأْثُورَةِ ✨</h2>
+        <div class="grid-container" id="grid">
+            <!-- سيتم توليد الـ 100 مكعب هنا بواسطة الجافا سكريبت -->
+        </div>
+    </div>
+
+    <!-- نافذة عرض الأدعية -->
+    <div id="duaModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <p id="duaText" class="dua-text"></p>
+            <button class="close-btn" onclick="closeModal()">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        // دالة الانتقال للشاشة الثانية
+        function goToNextScreen() {
+            const s1 = document.getElementById('screen1');
+            const s2 = document.getElementById('screen2');
+            
+            s1.style.transform = 'translateY(-100%)';
+            s2.style.display = 'block';
+            setTimeout(() => {
+                s1.style.display = 'none';
+            }, 600);
+        }
+
+        // قاعدة بيانات الأدعية (موزعة على التصنيفات المطلوبة)
+        const duaData = {
+            "رزق": "• اللهم اكفني بحلالك عن حرامك، وأغنني بفضلك عمن سواك.\n• اللهم ارزقني رزقاً واسعاً حلالاً طيباً مباركاً فيه.\n• يا كريم، بسطت يدي إليك فاملأها بفيض جودك وكرمك.",
+            "توفيق": "• اللهم لا سهل إلا ما جعلته سهلاً، وأنت تجعل الحزن إذا شئت سهلاً.\n• اللهم وفّقني لما تحب وترضى، واجعل النجاح حليفي.\n• ياحي يا قيوم برحمتك أستغيث، أصلح لي شأني كله.",
+            "مغفرة": "• ربي اغفر لي وتوب عليّ إنك أنت التواب الرحيم.\n• اللهم إنك عفو تحب العفو فاعفُ عني.\n• اللهم إني ظلمت نفسي ظلماً كثيراً ولا يغفر الذنوب إلا أنت.",
+            "صحة": "• أذهب البأس رب الناس، اشف وأنت الشافي لا شفاء إلا شفاؤك.\n• اللهم عافني في بدني، اللهم عافني في سمعي، اللهم عافني في بصري.\n• ربي إني مسني الضر وأنت أرحم الراحمين.",
+            "تيسير": "• ربي اشرح لي صدري ويسر لي أمري واحلل عقدة من لساني.\n• اللهم يسّر لي كل عسير، فإن تيسير كل عسير عليك يسير.\n• اللهم اختر لي ولا تخيرني، ورضني بما قسمت لي."
+        };
+
+        // توليد 100 مكعب تلقائياً وتوزيع العناوين عليها
+        const grid = document.getElementById('grid');
+        const categories = ["رزق", "توفيق", "مغفرة", "صحة", "تيسير"];
+
+        for (let i = 1; i <= 100; i++) {
+            // اختيار تصنيف بالتردور لضمان تنوع الـ 100 مكعب
+            const currentCat = categories[(i - 1) % categories.length];
+            
+            const cube = document.createElement('div');
+            cube.className = 'cube';
+            cube.innerText = `🕋 أدعية ${currentCat} (${i})`;
+            
+            // عند النقر على المكعب يظهر الدعاء المخصص له
+            cube.onclick = function() {
+                openModal(`أدعية ${currentCat}`, duaData[currentCat]);
+            };
+            
+            grid.appendChild(cube);
+        }
+
+        // فتح وإغلاق النافذة المنبثقة
+        function openModal(title, text) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('duaText').innerText = text;
+            document.getElementById('duaModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('duaModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
